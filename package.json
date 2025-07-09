@@ -1,13 +1,12 @@
 {
-  "name": "almond",
+  "name": "swarmfarm-paddock-recorder-updater",
   "version": "1.9.0",
   "description": "Electron updating server made to be super light-weight and easy to use and deploy, written in TypeScript!",
   "main": "src/index.ts",
   "scripts": {
-    "start:dev": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/src/index.js",
+    "start": "bun run dist/index.js",
     "lint": "eslint --fix src test",
     "test": "jest",
     "typecheck": "tsc --noEmit"
