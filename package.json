@@ -9,7 +9,11 @@
     "start": "bun run dist/index.js",
     "lint": "eslint --fix src test",
     "test": "jest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "pre-deploy": "./pre-deploy.sh",
+    "deploy": "./deploy.sh",
+    "build:clean": "rm -rf dist && bun run build",
+    "build:verify": "node -e \"const fs = require('fs'); if (fs.existsSync('./dist/index.js') && fs.existsSync('./dist/app.js')) { console.log('✅ Build verification passed - all files present'); } else { console.log('❌ Build verification failed - missing files'); process.exit(1); }\""
   },
   "keywords": [],
   "author": "Konotorii <business@konotorii.com> (https://konotorii.com)",

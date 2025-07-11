@@ -28,10 +28,30 @@ This guide explains how to deploy the SwarmFarm Paddock Recorder updater server 
    flyctl secrets set PRE=true  # Enable pre-release support
    ```
 
-4. **Deploy**:
+4. **Deploy with Build Verification**:
    ```bash
+   # Option 1: Full deployment with build verification
    ./deploy.sh
+   
+   # Option 2: Using npm/bun scripts
+   bun run deploy
+   
+   # Option 3: Test build first, then deploy
+   bun run pre-deploy  # Test build locally
+   bun run deploy      # Deploy to Fly.io
    ```
+
+## Build Verification Process
+
+The deployment process now includes comprehensive build verification to prevent deployment failures:
+
+1. **Clean Build**: Removes previous `dist/` folder
+2. **TypeScript Compilation**: Builds the application
+3. **File Verification**: Ensures required files exist:
+   - `dist/index.js` (main entry point)
+   - `dist/app.js` (application logic)
+4. **Local Testing**: Starts app locally and tests endpoints
+5. **Process Cleanup**: Ensures no background processes remain
 
 ## Manual Deployment
 
@@ -42,10 +62,49 @@ If you prefer to deploy manually:
    bun run build
    ```
 
-2. **Deploy to Fly.io**:
+2. **Verify build locally**:
+   ```bash
+   bun run build:verify
+   ```
+
+3. **Deploy to Fly.io**:
    ```bash
    flyctl deploy
    ```
+
+## Available Scripts
+
+The following scripts are available for development and deployment:
+
+- `bun run build` - Build TypeScript to JavaScript
+- `bun run build:clean` - Clean previous build and rebuild
+- `bun run build:verify` - Verify build output can be loaded
+- `bun run pre-deploy` - Run complete pre-deployment checks
+- `bun run deploy` - Full deployment process with verification
+- `bun run start` - Run the built application locally
+- `bun run dev` - Development mode with hot reload
+- `bun run test` - Run tests
+- `bun run lint` - Run linting
+
+## Troubleshooting Build Issues
+
+### "Module not found" Error
+
+This was the original issue that caused server restarts. The solution:
+
+1. **Ensure clean build**: `bun run build:clean`
+2. **Verify file structure**: Check that `dist/index.js` exists
+3. **Test locally**: `bun run pre-deploy`
+4. **Check TypeScript config**: Verify `tsconfig.json` output directory
+
+### Local Test Failures
+
+If the local test fails during pre-deployment:
+
+1. **Check port availability**: Ensure port 5000 is not in use
+2. **Verify environment**: Check `.env` file exists with required variables
+3. **Check dependencies**: Run `bun install` to ensure all packages are installed
+4. **Manual test**: Run `bun run start` and test endpoints manually
 
 ## Environment Variables
 
